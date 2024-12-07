@@ -1,19 +1,716 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 	<head>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width" />
-		<title>My static Space</title>
-		<link rel="stylesheet" href="style.css" />
+		<title>Bubble Shooter</title>
+		<meta charset="UTF-8" />
+		<meta name="description" content="One-minute creation by AI Coding Autonomous Agent MOUSE-I" />
+		<meta name="keywords" content="AI Coding, Bubble Shooter, MOUSE-I, Sebastian Kay, Browser game" />
+		<meta name="author" content="Sebastian Kay" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet" />
+		<style>
+			* {
+				margin: 0;
+				padding: 0;
+				box-sizing: border-box;
+				font-family: "Tiny5", cursive;
+			}
+
+			body {
+				background-color: #1a1a1a;
+				display: flex;
+				flex-direction: column;
+				align-items: center;
+				min-height: 100vh;
+				color: #fff;
+			}
+
+			.game-container {
+				position: relative;
+				margin: auto 0;
+				background: #2d2d2d;
+				padding: 20px;
+				border-radius: 10px;
+				box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+			}
+
+			.info-panel {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-bottom: 10px;
+				padding: 10px;
+				background: rgba(0, 0, 0, 0.2);
+				border-radius: 5px;
+				font-size: 14px;
+				line-height: 1.5;
+			}
+
+			canvas {
+				border: 2px solid #444;
+				border-radius: 5px;
+			}
+
+			.controls {
+				position: absolute;
+				margin-top: 26px;
+				left: 0;
+				right: 0;
+				text-align: center;
+				font-size: 0.9rem;
+				color: rgba(136, 136, 136, 0.2);
+			}
+
+			button {
+				background: #444;
+				color: #fff;
+				border: none;
+				padding: 10px 20px;
+				font-size: 12px;
+				cursor: pointer;
+				margin: 5px;
+				border-radius: 5px;
+				font-family: "Tiny5", cursive;
+			}
+
+			button:hover {
+				background: #555;
+			}
+
+			div.game-over,
+			.start-screen {
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				text-align: center;
+				display: none;
+				z-index: 20;
+				h2 {
+					--h-bg-color: #b9fecd;
+					background: var(--h-bg-color);
+					border: 5px solid var(--h-bg-color);
+					transform: rotate(-1deg);
+					font-size: 2.4rem;
+					color: rgba(0, 0, 0, 0.5);
+					border-radius: 5px;
+				}
+				h2.game-over {
+					--h-bg-color: #ffb3ba !important;
+					background: var(--h-bg-color);
+					border: 5px solid var(--h-bg-color);
+					transform: rotate(-1deg);
+					font-size: 2.4rem;
+					color: rgba(0, 0, 0, 0.5);
+					border-radius: 5px;
+				}
+			}
+
+			.pause-screen {
+				inset: 0;
+				backdrop-filter: blur(2px);
+				background: rgba(0, 0, 0, 0.5);
+				position: absolute;
+				display: none;
+				z-index: 20;
+				.inner {
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+					text-align: center;
+					background: rgba(0, 0, 0, 0.7);
+					padding: 40px;
+					border-radius: 10px;
+				}
+			}
+
+			.score {
+				position: absolute;
+				top: 20px;
+				right: 20px;
+				text-align: right;
+			}
+		</style>
 	</head>
 	<body>
-		<div class="card">
-			<h1>Welcome to your static Space!</h1>
-			<p>You can modify this app directly by editing <i>index.html</i> in the Files and versions tab.</p>
-			<p>
-				Also don't forget to check the
-				<a href="https://huggingface.co/docs/hub/spaces" target="_blank">Spaces documentation</a>.
-			</p>
+		<div class="start-screen">
+			<h2>BUBBLE SHOOTER</h2>
+			<button id="startButton">START GAME</button>
 		</div>
+		<div class="game-over">
+			<h2 class="game-over">GAME OVER</h2>
+			<button id="restartButton">PLAY AGAIN</button>
+		</div>
+		<div class="pause-screen">
+			<div class="inner">
+				<h2>PAUSED</h2>
+				<button id="resumeButton">RESUME</button>
+			</div>
+		</div>
+		<div class="game-container">
+			<div class="info-panel">
+				<div>LEVEL: <span id="level">1</span></div>
+				<div>SCORE: <span id="score">0</span></div>
+				<div>HIGH: <span id="highScore">0</span></div>
+				<button id="pauseButton" class="btn">ǁ (P)</button>
+			</div>
+			<canvas width="400" height="600" id="game"></canvas>
+			<div class="controls">
+				<p>← → : AIM | ↑ : SHOOT | P : PAUSE</p>
+				<p>OR USE MOUSE TO AIM AND CLICK TO SHOOT</p>
+			</div>
+		</div>
+
+		<script>
+			const canvas = document.getElementById("game")
+			const context = canvas.getContext("2d")
+			const grid = 39
+			const body = document.querySelector("body")
+			const buttonsAll = document.getElementsByTagName("button")
+			const startButton = document.getElementById("startButton")
+			const restartButton = document.getElementById("restartButton")
+			const pauseButton = document.getElementById("pauseButton")
+			const resumeButton = document.getElementById("resumeButton")
+
+			const levelValue = document.getElementById("level")
+			const scoreValue = document.getElementById("score")
+			const highScoreValue = document.getElementById("highScore")
+
+			const startScreen = document.querySelector(".start-screen")
+			const gameoverScreen = document.querySelector("div.game-over")
+
+			let addedLevel = 0
+			let isOddRow = false
+			let addRowInterval
+
+			function initGame() {
+				gameState = {
+					isGameOver: false,
+					isPaused: false,
+					isPlaying: true,
+					score: 0,
+					level: 1,
+				}
+
+				let addRowInterval
+				updateUI()
+			}
+
+			// each even row is 10 bubbles long and each odd row is 9 bubbles long.
+			const level1 = Array.from({ length: 4 }, () => Array.from({ length: 10 }, () => Math.floor(Math.random() * 4)))
+
+			// create a mapping between color short code (R, G, B, Y) and color name
+			const colorMap = {
+				0: "#FFB3BA",
+				1: "#BAFFC9",
+				2: "#BAE1FF",
+				3: "#FFFFBA",
+			}
+			const colors = Object.values(colorMap)
+
+			// use a 1px gap between each bubble
+			const bubbleGap = 0.8
+
+			// the size of the outer walls for the game
+			const wallSize = 0
+			const bubbles = []
+			let particles = []
+
+			// helper function to convert deg to radians
+			function degToRad(deg) {
+				return (deg * Math.PI) / 180
+			}
+
+			// rotate a point by an angle
+			function rotatePoint(x, y, angle) {
+				let sin = Math.sin(angle)
+				let cos = Math.cos(angle)
+
+				return {
+					x: x * cos - y * sin,
+					y: x * sin + y * cos,
+				}
+			}
+
+			// get a random integer between the range of [min,max]
+			function getRandomInt(min, max) {
+				min = Math.ceil(min)
+				max = Math.floor(max)
+
+				return Math.floor(Math.random() * (max - min + 1)) + min
+			}
+
+			// get the distance between two points
+			function getDistance(obj1, obj2) {
+				const distX = obj1.x - obj2.x
+				const distY = obj1.y - obj2.y
+				return Math.sqrt(distX * distX + distY * distY)
+			}
+
+			// check for collision between two circles
+			function collides(obj1, obj2) {
+				return getDistance(obj1, obj2) < obj1.radius + obj2.radius
+			}
+
+			// find the closest bubbles that collide with the object
+			function getClosestBubble(obj, activeState = false) {
+				const closestBubbles = bubbles.filter((bubble) => bubble.active == activeState && collides(obj, bubble))
+
+				if (!closestBubbles.length) {
+					return
+				}
+
+				return (
+					closestBubbles
+						// turn the array of bubbles into an array of distances
+						.map((bubble) => {
+							return {
+								distance: getDistance(obj, bubble),
+								bubble,
+							}
+						})
+						.sort((a, b) => a.distance - b.distance)[0].bubble
+				)
+			}
+
+			// create the bubble grid bubble. passing a color will create
+			// an active bubble
+			function createBubble(x, y, color, isOddRow = false) {
+				const row = Math.floor(y / grid)
+				const col = Math.floor(x / grid)
+				let startX
+				if (row % 2 === 0) {
+					if (isOddRow) startX = 0.5 * grid
+					else startX = 0
+				} else startX = 0.5 * grid
+				const center = grid / 2
+
+				bubbles.push({
+					x: wallSize + (grid + bubbleGap) * col + startX + center,
+					y: wallSize + (grid + bubbleGap - 4) * row + center,
+
+					radius: grid / 2,
+					color: color,
+					active: color ? true : false,
+				})
+			}
+			// MARK: UPDATE UI
+			function updateUI() {
+				scoreValue.textContent = gameState.score
+				highScoreValue.textContent = localStorage.getItem("highScore") || 0
+				if (scoreValue.textContent > highScoreValue.textContent) {
+					localStorage.setItem("highScore", scoreValue.textContent)
+				}
+				if (gameState.level < Math.floor(gameState.score / 2000 + 1)) {
+					console.log("NEW LEVEL")
+					gameState.level = Math.floor(gameState.score / 2000 + 1)
+					levelValue.textContent = gameState.level
+					addRowInterval = setInterval(addNewRow, (30 - gameState.level) * 1000)
+				}
+			}
+
+			// get all bubbles that touch the passed in bubble
+			function getNeighbors(bubble) {
+				const neighbors = []
+
+				// check each of the 6 directions by "moving" the bubble by a full
+				// grid in each of the 6 directions (60 degree intervals)
+				const dirs = [
+					// right
+					rotatePoint(grid, 0, 0), // up-right
+					rotatePoint(grid, 0, degToRad(60)), // up-left
+					rotatePoint(grid, 0, degToRad(120)), // left
+					rotatePoint(grid, 0, degToRad(180)), // down-left
+					rotatePoint(grid, 0, degToRad(240)), // down-right
+					rotatePoint(grid, 0, degToRad(300)),
+				]
+
+				for (let i = 0; i < dirs.length; i++) {
+					const dir = dirs[i]
+
+					const newBubble = {
+						x: bubble.x + dir.x,
+						y: bubble.y + dir.y,
+						radius: bubble.radius,
+					}
+					const neighbor = getClosestBubble(newBubble, true)
+					if (neighbor && neighbor !== bubble && !neighbors.includes(neighbor)) {
+						neighbors.push(neighbor)
+					}
+				}
+
+				return neighbors
+			}
+
+			// remove bubbles that create a match of 3 colors
+			function removeMatch(targetBubble) {
+				const matches = [targetBubble]
+
+				bubbles.forEach((bubble) => (bubble.processed = false))
+				targetBubble.processed = true
+
+				// loop over the neighbors of matching colors for more matches
+				let neighbors = getNeighbors(targetBubble)
+				for (let i = 0; i < neighbors.length; i++) {
+					let neighbor = neighbors[i]
+
+					if (!neighbor.processed) {
+						neighbor.processed = true
+
+						if (neighbor.color === targetBubble.color) {
+							matches.push(neighbor)
+							neighbors = neighbors.concat(getNeighbors(neighbor))
+						}
+					}
+				}
+
+				// MARK: MATCHES
+				if (matches.length >= 3) {
+					console.log("Matches found: " + matches.length)
+					const scoreMultiplier = matches.length * 100 + matches.length * 10
+					gameState.score += scoreMultiplier
+					console.log(gameState.score)
+					matches.forEach((bubble) => {
+						bubble.active = false
+					})
+
+					updateUI()
+				}
+			}
+
+			// make any floating bubbles (bubbles that don't have a bubble chain
+			// that touch the ceiling) drop down the screen
+			function dropFloatingBubbles() {
+				const activeBubbles = bubbles.filter((bubble) => bubble.active)
+				activeBubbles.forEach((bubble) => (bubble.processed = false))
+
+				// start at the bubbles that touch the ceiling
+				let neighbors = activeBubbles.filter((bubble) => bubble.y - grid <= wallSize)
+
+				// process all bubbles that form a chain with the ceiling bubbles
+				for (let i = 0; i < neighbors.length; i++) {
+					let neighbor = neighbors[i]
+
+					if (!neighbor.processed) {
+						neighbor.processed = true
+						neighbors = neighbors.concat(getNeighbors(neighbor))
+					}
+				}
+
+				// any bubble that is not processed doesn't touch the ceiling
+				activeBubbles
+					.filter((bubble) => !bubble.processed)
+					.forEach((bubble) => {
+						bubble.active = false
+						// create a particle bubble that falls down the screen
+						particles.push({
+							x: bubble.x,
+							y: bubble.y,
+							color: bubble.color,
+							radius: bubble.radius,
+							active: true,
+						})
+					})
+			}
+
+			// fill the grid with inactive bubbles
+			for (let row = 0; row < 10; row++) {
+				for (let col = 0; col < (row % 2 === 0 ? 10 : 9); col++) {
+					const color = level1[row]?.[col]
+					createBubble(col * grid, row * grid, colorMap[color])
+				}
+			}
+
+			function addNewRow() {
+				console.log("Added new row")
+				console.log(Date.now())
+				// move all bubbles one row down
+				bubbles.forEach((bubble) => (bubble.y += grid))
+
+				const level = addedLevel++
+				const offset = level % 2 === 0 ? grid : 0
+				isOddRow = level % 2 === 0
+				console.log("Is odd row 1: " + isOddRow)
+				// create a new row at the top
+				for (let col = 0; col < (level % 2 === 0 ? 9 : 10); col++) {
+					const color = colors[Math.floor(Math.random() * colors.length)]
+					createBubble(col * grid, 0, color, isOddRow)
+				}
+			}
+
+			const curBubblePos = {
+				// place the current bubble horizontally in the middle of the screen
+				x: canvas.width / 2,
+				y: canvas.height - 40,
+			}
+			const curBubble = {
+				x: curBubblePos.x,
+				y: curBubblePos.y,
+				color: colors[getRandomInt(0, colors.length - 1)],
+				radius: grid / 2, // a circles radius is half the width (diameter)
+
+				// how fast the bubble should go in either the x or y direction
+				speed: 16,
+
+				// bubble velocity
+				dx: 0,
+				dy: 0,
+			}
+
+			// angle (in radians) of the shooting arrow
+			let shootDeg = 0
+			const minDeg = degToRad(-80)
+			const maxDeg = degToRad(80)
+			let shootDir = 0
+
+			const nextBubblePos = {
+				x: canvas.width - 40,
+				y: canvas.height - 40,
+			}
+
+			let nextBubble = {
+				x: nextBubblePos.x,
+				y: nextBubblePos.y,
+				color: colors[getRandomInt(0, colors.length - 1)],
+				radius: grid / 2,
+			}
+
+			// reset the bubble to shoot to the bottom of the screen
+			function getNewBubble() {
+				curBubble.x = curBubblePos.x
+				curBubble.y = curBubblePos.y
+				curBubble.dx = curBubble.dy = 0
+
+				// Use nextBubble's color for current bubble
+				curBubble.color = nextBubble.color
+
+				// Generate a new nextBubble color
+				nextBubble.color = colors[getRandomInt(0, colors.length - 1)]
+			}
+
+			// handle collision between the current bubble and another bubble
+			function handleCollision(bubble) {
+				bubble.color = curBubble.color
+				bubble.active = true
+				getNewBubble()
+				removeMatch(bubble)
+				dropFloatingBubbles()
+			}
+
+			// MARK: GAME LOOP START
+			function loop() {
+				requestAnimationFrame(loop)
+				if (gameState.isPaused || gameState.isGameOver) return
+
+				context.clearRect(0, 0, canvas.width, canvas.height)
+
+				// move the shooting arrow
+				shootDeg = shootDeg + degToRad(2) * shootDir
+
+				// prevent shooting arrow from going below/above min/max
+				if (shootDeg < minDeg) {
+					shootDeg = minDeg
+				} else if (shootDeg > maxDeg) {
+					shootDeg = maxDeg
+				}
+
+				// move current bubble by it's velocity
+				curBubble.x += curBubble.dx
+				curBubble.y += curBubble.dy
+
+				// prevent bubble from going through walls by changing its velocity
+				if (curBubble.x - grid / 2 < wallSize) {
+					curBubble.x = wallSize + grid / 2
+					curBubble.dx *= -1
+				} else if (curBubble.x + grid / 2 > canvas.width - wallSize) {
+					curBubble.x = canvas.width - wallSize - grid / 2
+					curBubble.dx *= -1
+				}
+
+				// check to see if bubble collides with the top wall
+				if (curBubble.y - grid / 2 < wallSize) {
+					// make the closest inactive bubble active
+					const closestBubble = getClosestBubble(curBubble)
+					handleCollision(closestBubble)
+				}
+
+				// check to see if bubble collides with another bubble
+				for (let i = 0; i < bubbles.length; i++) {
+					const bubble = bubbles[i]
+
+					if (bubble.active && collides(curBubble, bubble)) {
+						const closestBubble = getClosestBubble(curBubble)
+						// MARK: GAME-OVER
+						if (!closestBubble) {
+							//window.alert("Game Over")
+							//window.location.reload()
+							gameState.isGameOver = true
+							clearInterval(addRowInterval)
+							const highScore = localStorage.getItem("highScore") || 0
+							if (gameState.score > highScore) {
+								localStorage.setItem("highScore", gameState.score)
+							}
+							document.querySelector("div.game-over").style.display = "block"
+							return
+						}
+
+						if (closestBubble) {
+							handleCollision(closestBubble)
+						}
+					}
+				}
+
+				// move bubble particles
+				particles.forEach((particle) => {
+					particle.y += 8
+				})
+
+				// remove particles that went off the screen
+				particles = particles.filter((particles) => particles.y < canvas.height - grid / 2)
+
+				// draw walls
+				context.fillStyle = "lightgrey"
+				context.fillRect(0, 0, canvas.width, wallSize)
+				context.fillRect(0, 0, wallSize, canvas.height)
+				context.fillRect(canvas.width - wallSize, 0, wallSize, canvas.height)
+				context.beginPath()
+				bottomBorderImage = new Image()
+				bottomBorderImage.src =
+					"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAABGCAYAAADir8JKAAAACXBIWXMAAAsSAAALEgHS3X78AAAEGElEQVR4nO3dzVHbQBjG8Yc0ALnyHuwOcCqIU0HoICrBHYR0QAe4BKcCnAridIAPew6ugBy0zGSYsZFWH+t39f/N+Cjp2QsPq5VWFy8vLwKmyMwWkpaSFpLmkj6/c8gvSU+SdpK2IYTdgPGAs3dBgWBKzOxW0uvvsuPpDpI2kjYhhE3XbIA3FAiKZ2ZXklaSKkmzgS6zl7SWdB9CeB7oGsBZoUBQNDO7U10eXWcbTR1Ul8jdSNcDsqFAUCQzW6qeEQw143jPXlIVQthmuj4wuA+5AwB9M7N7SY/KVx6K136MWYAiMQNBMcxsrnpR+yZzlLf+SLoNITzlDgL0iQJBEeIjuVuNt9bR1kHSkkd/URJuYcE9B+Uh1dm2MStQBAoErjkpj1eUCIrCLSy4Fdc8dvJRHv87SFqwJgLvmIHApfhy4Eb+ykOqM/PmOtyjQODVnc7vaas2bnjEF95xCwvuxJcEH3Pn6MkXXjaEV8xA4NE6d4AerXMHAFJRIHAl7m2V8w3zvs3imAB3uIUFN+LC+ZN8LpyfcpA0ZxdfeMMMBJ5UKq88pHpMVe4QQFsUCDxZ5Q4woJLHhkJRIHAhfkmwpLWPt2ZxjIAbFAi8mMIf1ymMEQWhQODFFP64TmGMKAgFgrMXNx8scfH8rUs2WoQnFAg8WOYOMKJl7gBAUxQIPJjSf+VTGiuco0DgwTx3gBHNcwcAmqJA4MHn3AFGNKWxwjkKBACQ5OL6+prNsADguMlsud/2UwnMQAAASSgQAEASCgQAkIQCAQAkoUAA4LSr3AFG1GqsFAgAnDal3QFajZUCAYDTKJAjKBAAOI0COYICAYDTZmY2zx1iaHGMrb76SYEAwPuWuQOMYNn2AAoEAN43ha9Fth4je2EBQDMfQwjPuUMMwcyuJP1texwzEABopsodYEBVykEUCAA0s8odYEBJY6NAAKCZmZlVuUP0LY6p1dNXr1gDAYDm9pIWpayFxLWPnRILhBkIADQ3U1m3slZKLA+JGQgApPgUQtjlDtGFmS0k/e5yDmYgANDeOneAHqy7noACAYD2bsxsnTtEqpj9put5KBAASPPN41NZMfO3Ps5FgQBAugdPJRKzPvR1PgoEALpxUSJ9l4dEgQBAH866RIYoD4kCAYC+PJzjwnrM1Ht5SLwHAgB9+yOpyv2eSHzPY60enrY6hgIBgGH8kHQ/9rYncXuSlaTvQ1+LW1gAMIzvknZjro3Ea+00QnlIzEAAYAx7SfeS1n3PSOKMo1LHfa1SUCAAMK6fkjaStiGEp5QTmNlc9TfMbyV97StYWxQIAOSzV33L6fV3bHZyJWnx32/UmcYxFAgAIAmL6ACAJBQIACAJBQIASEKBAACSUCAAgCQUCAAgCQUCAEhCgQAAklAgAIAk/wDMhdGTLpCVPwAAAABJRU5ErkJggg=="
+				context.drawImage(bottomBorderImage, 0, canvas.height - 70)
+				context.closePath()
+
+				// Draw next bubble
+				context.fillStyle = nextBubble.color
+				context.beginPath()
+				context.arc(nextBubble.x, nextBubble.y, nextBubble.radius, 0, 2 * Math.PI)
+				context.fill()
+
+				// draw bubbles and particles
+				bubbles.concat(particles).forEach((bubble) => {
+					if (!bubble.active) return
+					context.fillStyle = bubble.color
+
+					// draw a circle
+					context.beginPath()
+					context.arc(bubble.x, bubble.y, bubble.radius, 0, 2 * Math.PI)
+					context.fill()
+				})
+
+				// draw fire arrow. since we're rotating the canvas we need to save
+				// the state and restore it when we're done
+				context.save()
+				context.translate(curBubblePos.x, curBubblePos.y)
+				context.rotate(shootDeg)
+				context.translate(0, -10)
+
+				// draw arrow ↑
+				shooterImage = new Image()
+				shooterImage.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAB2CAYAAAD1J9I6AAAACXBIWXMAAAsSAAALEgHS3X78AAAAjElEQVRIie3QsQ3DIBRF0QvKFFB4JbMJo2STMFIo/hzfhRMJWQlBSvtuywOhE9ydnPMO3IGNsw5UM2shpbQDDz5XQkrpOdy81uPkEGCLk0MA4utD3+oRqJNBjWbWgHJ5qQPFzFpw959/+G9wA0Qt6neiBkS9PhC1qMdEDYh6fSBqUY+JGhD1+kDUJ/UByN4RqOiQZ/8AAAAASUVORK5CYII="
+				context.drawImage(shooterImage, 0, -90)
+
+				context.restore()
+
+				// draw current bubble
+				context.fillStyle = curBubble.color
+				context.beginPath()
+				context.arc(curBubble.x, curBubble.y, curBubble.radius, 0, 2 * Math.PI)
+				context.fill()
+			}
+			// MARK: GAME LOOP ENDE
+
+			// MARK: EVENT HANDLER START
+
+			// Mousemove event for aiming
+			document.addEventListener("mousemove", (e) => {
+				const rect = canvas.getBoundingClientRect()
+				const centerX = rect.left + canvas.width / 2
+				const centerY = rect.top + canvas.height
+				const mouseX = e.clientX - centerX
+				const mouseY = e.clientY - centerY
+				shootDeg = Math.atan2(mouseX, -mouseY) // Calculate angle relative to center
+
+				// Constrain angle within -80 to 80 degrees
+				const maxAngleRad = degToRad(180)
+				const minAngleRad = degToRad(-180)
+				shootDeg = Math.max(minAngleRad, Math.min(maxAngleRad, shootDeg))
+			})
+
+			// Click event for shooting
+			canvas.addEventListener("click", (e) => {
+				if (curBubble.dx === 0 && curBubble.dy === 0 && !gameState.isPaused && !gameState.isGameOver) {
+					// Only shoot if bubble isn't moving & game is active
+					curBubble.dx = Math.sin(shootDeg) * curBubble.speed
+					curBubble.dy = -Math.cos(shootDeg) * curBubble.speed
+				}
+			})
+
+			function pauseGame() {
+				gameState.isPaused = !gameState.isPaused
+				document.querySelector(".pause-screen").style.display = gameState.isPaused ? "block" : "none"
+				canvas.style.cursor = gameState.isPaused ? "initial" : "none"
+
+				// Clear velocity when paused to prevent movement
+				if (gameState.isPaused) {
+					curBubble.dx = 0
+					curBubble.dy = 0
+				}
+			}
+
+			document.addEventListener("keydown", (e) => {
+				switch (e.key) {
+					case "ArrowLeft":
+						if (gameState.isPaused) break
+						if (gameState.isPlaying) gameState.shooterAngle = Math.max(gameState.shooterAngle - 0.1, -Math.PI / 3)
+						break
+					case "ArrowRight":
+						if (gameState.isPaused) break
+						if (gameState.isPlaying) gameState.shooterAngle = Math.min(gameState.shooterAngle + 0.1, Math.PI / 3)
+						break
+					case "ArrowUp":
+						if (gameState.isPaused) break
+						if (gameState.isPlaying && curBubble.dx === 0 && curBubble.dy === 0) {
+							curBubble.dx = Math.sin(shootDeg) * curBubble.speed
+							curBubble.dy = -Math.cos(shootDeg) * curBubble.speed
+						}
+						break
+					case "p":
+					case "Escape":
+						pauseGame()
+						break
+				}
+			})
+
+			document.addEventListener("keyup", (e) => {
+				if ((e.code === "ArrowLeft" && shootDir === -1) || (e.code === "ArrowRight" && shootDir === 1)) {
+					shootDir = 0
+				}
+			})
+
+			startButton.addEventListener("click", () => {
+				document.querySelector("div.start-screen").style.display = "none"
+				canvas.style.cursor = "none"
+				initGame()
+				requestAnimationFrame(loop)
+			})
+
+			document.getElementById("pauseButton").addEventListener("click", () => {
+				if (!gameState.isPlaying || gameState.isPaused) return
+				pauseGame()
+			})
+
+			resumeButton.addEventListener("click", () => {
+				pauseGame()
+			})
+
+			restartButton.addEventListener("click", () => {
+				window.location.reload()
+			})
+
+			// MARK: EVENT HANDLER ENDE
+
+			startScreen.style.display = "block"
+		</script>
 	</body>
 </html>
