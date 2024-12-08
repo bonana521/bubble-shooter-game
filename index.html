@@ -713,7 +713,7 @@
 			})
 
 			// Click event for shooting
-			canvas.addEventListener("click", (e) => {
+			document.addEventListener("click", (e) => {
 				if (curBubble.dx === 0 && curBubble.dy === 0 && !gameState.isPaused && !gameState.isGameOver) {
 					// Only shoot if bubble isn't moving & game is active
 					curBubble.dx = Math.sin(shootDeg) * curBubble.speed
