@@ -406,7 +406,7 @@
 
 				// MARK: MATCHES
 				if (matches.length >= 3) {
-					SoundManager.play("plopp" + randomInt(1, 3)) // play sound
+					SoundManager.play("plopp" + getRandomInt(1, 3)) // play sound
 					console.log("Matches found: " + matches.length)
 					const scoreMultiplier = matches.length * 100 + matches.length * 10
 					gameState.score += scoreMultiplier
