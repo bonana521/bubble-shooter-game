@@ -25,6 +25,23 @@
 				color: #fff;
 			}
 
+			@media (max-width: 400px) {
+				body {
+					font-size: 12px;
+					position: fixed;
+					top: 0;
+					left: 0;
+					width: 100vw;
+					height: 100vh;
+				}
+				canvas {
+					position: fixed;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%, -50%);
+				}
+			}
+
 			.game-container {
 				position: relative;
 				margin: auto 0;
@@ -727,6 +744,31 @@
 			document.addEventListener("keyup", (e) => {
 				if ((e.code === "ArrowLeft" && shootDir === -1) || (e.code === "ArrowRight" && shootDir === 1)) {
 					shootDir = 0
+				}
+			})
+
+			// MARK: TOUCH EVENT HANDLER
+			canvas.addEventListener("touchmove", (e) => {
+				if (e.touches.length === 1) {
+					const rect = canvas.getBoundingClientRect()
+					const centerX = rect.left + canvas.width / 2
+					const centerY = rect.top + canvas.height
+					const touchX = e.touches[0].clientX - centerX
+					const touchY = e.touches[0].clientY - centerY
+					shootDeg = Math.atan2(touchX, -touchY) // Calculate angle relative to center
+					// Constrain angle within -80 to 80 degrees
+					const maxAngleRad = degToRad(180)
+					const minAngleRad = degToRad(-180)
+					shootDeg = Math.max(minAngleRad, Math.min(maxAngleRad, shootDeg))
+				}
+			})
+
+			canvas.addEventListener("touchend", (e) => {
+				if (curBubble.dx === 0 && curBubble.dy === 0 && !gameState.isPaused && !gameState.isGameOver) {
+					// Only shoot if bubble isn't moving & game is active
+					curBubble.dx = Math.sin(shootDeg) * curBubble.speed
+					curBubble.dy = -Math.cos(shootDeg) * curBubble.speed
+					SoundManager.play("shoot" + getRandomInt(1, 2).toString())
 				}
 			})
 
