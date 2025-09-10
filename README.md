@@ -2,6 +2,12 @@
 
 一个现代化的泡泡射击游戏，具有精美的渐变UI设计和中文界面。
 
+## 🌐 线上游玩
+
+**🎮 即点即玩：** [https://bonana521.github.io/bubble-shooter-game/](https://bonana521.github.io/bubble-shooter-game/)
+
+无需下载，直接在浏览器中即可游玩！
+
 ## 🎮 游戏特点
 
 - 🎯 **直观的游戏玩法** - 使用键盘方向键或鼠标瞄准和发射
@@ -40,11 +46,16 @@
 
 ## 🚀 快速开始
 
-### 在线游玩
+### 🌐 在线游玩（推荐）
 
-直接在浏览器中打开 `index.html` 文件即可开始游戏。
+**🎮 游戏链接：** [https://bonana521.github.io/bubble-shooter-game/](https://bonana521.github.io/bubble-shooter-game/)
 
-### 本地运行
+- ✅ 无需下载或安装
+- ✅ 支持所有现代浏览器
+- ✅ 跨平台兼容（桌面/移动端）
+- ✅ 自动更新到最新版本
+
+### 💻 本地运行
 
 1. 克隆项目到本地：
    ```bash
@@ -58,15 +69,55 @@
 
 3. 用浏览器打开 `index.html` 文件
 
+## 📊 项目进度
+
+### ✅ 已完成功能
+
+- **🎮 核心游戏机制**
+  - 泡泡发射和碰撞检测
+  - 颜色匹配和消除机制
+  - 关卡系统
+  - 分数计算
+
+- **🎨 UI/UX 设计**
+  - 现代化渐变背景动画
+  - 半透明卡片设计
+  - 毛玻璃效果
+  - 响应式布局
+
+- **🌐 本地化**
+  - 完整中文界面
+  - 中文操作说明
+  - 中文游戏状态显示
+
+- **🚀 线上部署**
+  - GitHub Pages 部署
+  - 线上版本可访问
+  - 自动化部署流程
+
+### 🎯 当前版本
+
+**版本：** v1.0.0  
+**状态：** 🟢 稳定运行  
+**最后更新：** 2025年1月
+
 ## 📁 项目结构
 
 ```
 bubble-shooter-game/
-├── index.html          # 游戏主页面
-├── style.css          # 样式文件
-├── README.md          # 项目说明
-└── .gitignore         # Git忽略文件
+├── index.html          # 游戏主页面（包含游戏逻辑）
+├── style.css          # 样式文件（现代化UI设计）
+├── README.md          # 项目说明文档
+├── .gitignore         # Git忽略文件
+└── .git/              # Git版本控制目录
 ```
+
+## 🌐 部署信息
+
+- **GitHub仓库：** https://github.com/bonana521/bubble-shooter-game
+- **GitHub Pages：** https://bonana521.github.io/bubble-shooter-game/
+- **部署方式：** GitHub Pages 自动部署
+- **访问方式：** 公开访问，无需登录
 
 ## 🎨 设计特色
 
