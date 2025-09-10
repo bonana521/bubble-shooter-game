@@ -1,20 +1,116 @@
----
-title: GAME - Bubble Shooter
-emoji: 🎮
-colorFrom: yellow
-colorTo: green
-sdk: static
-pinned: true
-license: mit
-short_description: One-minute creation by AI Coding Autonomous Agent MOUSE-I
-tags:
-- MOUSE-I
-- One-minute creation
-- Game
-- Bubble Shooter
-- OneFile
-thumbnail: >-
-  https://cdn-uploads.huggingface.co/production/uploads/65233d69971e5c137028bd32/C1bBWSgXwLcRVbVNAkft5.png
+# 泡泡射击游戏
+
+一个现代化的泡泡射击游戏，具有精美的渐变UI设计和中文界面。
+
+## 🎮 游戏特点
+
+- 🎯 **直观的游戏玩法** - 使用键盘方向键或鼠标瞄准和发射
+- 🎨 **现代化UI设计** - 精美的渐变背景和半透明卡片设计
+- 🌈 **动态视觉效果** - 流畅的动画和交互反馈
+- 📱 **响应式设计** - 支持桌面和移动设备
+- 🇨🇳 **中文界面** - 完全本地化的中文用户界面
+- 🎵 **音效支持** - 内置游戏音效（如需要可启用）
+
+## 🎯 游戏玩法
+
+### 控制方式
+
+**键盘控制：**
+- `← →` - 瞄准
+- `↑` - 发射泡泡
+- `P` - 暂停/继续游戏
+
+**鼠标控制：**
+- 移动鼠标瞄准
+- 点击鼠标左键发射泡泡
+
+### 游戏目标
+
+- 发射泡泡，匹配3个或更多相同颜色的泡泡
+- 清除所有泡泡以完成关卡
+- 获得尽可能高的分数
+
+## 🛠️ 技术特点
+
+- **纯前端实现** - 无需服务器，可直接在浏览器中运行
+- **Canvas渲染** - 流畅的2D图形渲染
+- **响应式布局** - 适配各种屏幕尺寸
+- **现代化CSS** - 使用CSS3特性和动画
+- **JavaScript游戏逻辑** - 完整的游戏状态管理
+
+## 🚀 快速开始
+
+### 在线游玩
+
+直接在浏览器中打开 `index.html` 文件即可开始游戏。
+
+### 本地运行
+
+1. 克隆项目到本地：
+   ```bash
+   git clone https://github.com/bonana521/bubble-shooter-game.git
+   ```
+
+2. 进入项目目录：
+   ```bash
+   cd bubble-shooter-game
+   ```
+
+3. 用浏览器打开 `index.html` 文件
+
+## 📁 项目结构
+
+```
+bubble-shooter-game/
+├── index.html          # 游戏主页面
+├── style.css          # 样式文件
+├── README.md          # 项目说明
+└── .gitignore         # Git忽略文件
+```
+
+## 🎨 设计特色
+
+### UI主题
+- **渐变背景** - 动态紫粉橙渐变动画
+- **半透明卡片** - 现代化的毛玻璃效果
+- **渐变按钮** - 精美的交互按钮设计
+- **中文本地化** - 完全的中文用户界面
+
+### 响应式设计
+- **桌面端** - 优化的键鼠操作体验
+- **移动端** - 适配触屏设备
+- **自适应布局** - 根据屏幕尺寸自动调整
+
+## 🔧 自定义和扩展
+
+### 修改游戏设置
+- 编辑 `index.html` 中的游戏参数
+- 修改 `style.css` 中的样式设置
+- 调整游戏难度和泡泡配置
+
+### 添加新功能
+- 扩展关卡系统
+- 添加新的游戏模式
+- 集成音效和背景音乐
+- 添加排行榜功能
+
+## 📄 许可证
+
+本项目基于原始开源项目进行修改和优化，遵循相应的开源许可证。
+
+## 🤝 贡献
+
+欢迎提交Issue和Pull Request来改进这个项目！
+
+## 🎯 未来计划
+
+- [ ] 添加更多关卡
+- [ ] 实现本地最高分存储
+- [ ] 添加音效开关
+- [ ] 优化移动端体验
+- [ ] 添加游戏暂停时的背景音乐
+- [ ] 实现更多泡泡类型和特殊效果
+
 ---
 
-Check out the configuration reference at https://huggingface.co/docs/hub/spaces-config-reference
+**享受游戏！** 🎮✨

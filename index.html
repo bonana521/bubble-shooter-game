@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Bubble Shooter</title>
+		<title>泡泡射击</title>
 		<meta charset="UTF-8" />
-		<meta name="description" content="One-minute creation by AI Coding Autonomous Agent MOUSE-I" />
-		<meta name="keywords" content="AI Coding, Bubble Shooter, MOUSE-I, Sebastian Kay, Browser game" />
+		<meta name="description" content="由AI编码代理MOUSE-I一分钟创作" />
+		<meta name="keywords" content="AI编码, 泡泡射击, MOUSE-I, Sebastian Kay, 浏览器游戏" />
 		<meta name="author" content="Sebastian Kay" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<link href="https://fonts.googleapis.com/css2?family=Tiny5&display=swap" rel="stylesheet" />
+		<link rel="stylesheet" href="style.css">
 		<style>
 			* {
 				margin: 0;
@@ -16,21 +17,17 @@
 				font-family: "Tiny5", cursive;
 			}
 
+			/* Basic layout styles - enhanced by external CSS */
 			body {
-				background-color: #1a1a1a;
 				display: flex;
 				flex-direction: column;
 				align-items: center;
 				min-height: 100vh;
-				color: #fff;
 			}
                 .game-container {
     				position: relative;
     				margin: auto 0;
-    				background: #2d2d2d;
     				padding: 20px;
-    				border-radius: 10px;
-    				box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     			}
 			@media (max-width:400px) {
 				html, body {
@@ -96,21 +93,7 @@
 				color: rgba(136, 136, 136, 0.2);
 			}
 
-			button {
-				background: #444;
-				color: #fff;
-				border: none;
-				padding: 10px 20px;
-				font-size: 12px;
-				cursor: pointer;
-				margin: 5px;
-				border-radius: 5px;
-				font-family: "Tiny5", cursive;
-			}
-
-			button:hover {
-				background: #555;
-			}
+			/* Button styles moved to external CSS */
 
 			div.game-over,
 			.start-screen {
@@ -170,30 +153,30 @@
 	</head>
 	<body>
 		<div class="start-screen">
-			<h2>BUBBLE SHOOTER</h2>
-			<button id="startButton">START GAME</button>
+			<h2>泡泡射击</h2>
+			<button id="startButton">开始游戏</button>
 		</div>
 		<div class="game-over">
-			<h2 class="game-over">GAME OVER</h2>
-			<button id="restartButton">PLAY AGAIN</button>
+			<h2 class="game-over">游戏结束</h2>
+			<button id="restartButton">重新开始</button>
 		</div>
 		<div class="pause-screen">
 			<div class="inner">
-				<h2>PAUSED</h2>
-				<button id="resumeButton">RESUME</button>
+				<h2>暂停</h2>
+				<button id="resumeButton">继续</button>
 			</div>
 		</div>
 		<div class="game-container">
 			<div class="info-panel">
-				<div>LEVEL: <span id="level">1</span></div>
-				<div>SCORE: <span id="score">0</span></div>
-				<div>HIGH: <span id="highScore">0</span></div>
+				<div>关卡: <span id="level">1</span></div>
+				<div>得分: <span id="score">0</span></div>
+				<div>最高分: <span id="highScore">0</span></div>
 				<button id="pauseButton" class="btn">ǁ (P)</button>
 			</div>
 			<canvas width="400" height="600" id="game"></canvas>
 			<div class="controls">
-				<p>← → : AIM | ↑ : SHOOT | P : PAUSE</p>
-				<p>OR USE MOUSE TO AIM AND CLICK TO SHOOT</p>
+				<p>← → : 瞄准 | ↑ : 发射 | P : 暂停</p>
+				<p>或使用鼠标瞄准，点击发射</p>
 			</div>
 		</div>
 
